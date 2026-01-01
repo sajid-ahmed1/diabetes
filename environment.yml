@@ -1,0 +1,30 @@
+name: diabetes
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  # defaults
+  - python>=3.8
+  - pip
+  - pre-commit
+  - pytest>=6
+  - pytest-cov
+  - setuptools-scm
+  # data
+  - pandas
+  - numpy<2
+  - pathlib # agonistic path saving
+  - pyarrow # to save the parquet file
+  # interactive
+  - ipykernel
+  # plots
+  - matplotlib
+  - nbformat
+  - seaborn
+  - shap
+  - plotly
+  # ml
+  - glum
+  - scikit-learn
+  - dalex
+  - lightgbm

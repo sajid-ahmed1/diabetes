@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diabetes"
+version = "0.1.0"
+description = "To predict if a patient has diabetes or not based off several features"
+readme = "README.md"
+authors = [
+    { name="Sajid Ahmed", email="sa2357@cam.ac.uk" }
+]
+requires-python = ">=3.8"
+keywords = ["web traffic", "machine learning", "prediction"]
+license = { text="MIT" }
+dependencies = [
+    "pandas",
+    "numpy",
+    "scipy",
+    "pyarrow",
+    "matplotlib",
+    "seaborn",
+    "lightgbm",
+    "scikit-learn",
+    "glum",
+    "dalex",
+    "pytest>=6",
+    "jupyter",
+    "pre-commit",
+    "shap",
+    "joblib"
+]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+no_implicit_optional = true
+check_untyped_defs = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["slow_sessions_project*"]
+
+[tool.black]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
