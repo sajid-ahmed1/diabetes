@@ -11,3 +11,19 @@ source .venv/bin/activate
 
 ```
 
+To create a new branch on GitHub:
+
+```python
+git checkout -b data
+```
+
+Run pre-commit packages to have clean, best practise code:
+
+```python
+pre-commit install
+```
+
+To start on development:
+```python
+pip install -e .
+```
