@@ -31,6 +31,6 @@ def read_data() -> pd.DataFrame:
         "nanditapore/healthcare-diabetes",
         file_path,
     )
-    print("Data ingestion complete, with dataframe head:")
-    print(df.head())
+    print("-" * 30)
+    print(f"Data ingestion complete: \n{df.head()}")
     return cast(pd.DataFrame, df)

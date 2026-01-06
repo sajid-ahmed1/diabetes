@@ -28,7 +28,9 @@ dependencies = [
     "jupyter",
     "pre-commit",
     "shap",
-    "joblib"
+    "joblib",
+    "kagglehub",
+    "python-dotenv"
 ]
 
 [tool.mypy]
