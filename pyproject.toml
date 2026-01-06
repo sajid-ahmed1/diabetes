@@ -28,7 +28,9 @@ dependencies = [
     "jupyter",
     "pre-commit",
     "shap",
-    "joblib"
+    "joblib",
+    "kagglehub",
+    "python-dotenv"
 ]
 
 [tool.mypy]
@@ -39,7 +41,7 @@ check_untyped_defs = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["slow_sessions_project*"]
+include = ["diabetes*"]
 
 [tool.black]
 exclude = '''
