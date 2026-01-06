@@ -35,6 +35,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # 4. Final Selection
     final_cols = [
+        "Id",
         "Pregnancies",
         "Glucose",
         "SkinThickness",
