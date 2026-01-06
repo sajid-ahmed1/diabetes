@@ -30,7 +30,8 @@ dependencies = [
     "shap",
     "joblib",
     "kagglehub",
-    "python-dotenv"
+    "python-dotenv",
+    "libomp"
 ]
 
 [tool.mypy]
