@@ -12,9 +12,6 @@ from diabetes.modelling import glm_pipeline, glm_search, lgbm_pipeline, lgbm_sea
 # load data
 df_model = load_parquet().copy()
 df_model.head()
-# %%
-# assigned y to be target column from built table
-y = df_model["Outcome"]
 
 # %%
 # Apply train/test split
@@ -29,7 +26,7 @@ df_test = df.iloc[test_idx].copy()
 # assign cateogrical and numerical columns
 # session id taken out as an identifier not a feature to model with
 # taken out os version due to high cardinality
-categoricals = [""]
+categoricals: list[str] = []
 
 numericals = [
     "Pregnancies",
@@ -49,9 +46,6 @@ predictors = categoricals + numericals
 # spliting away features and the targets away
 X_train = df_train[predictors]
 y_train = df_train["Outcome"]
-
-X_test = df_test[predictors]
-y_test = df_test["Outcome"]
 
 # %%
 # getting pipelines made from modelling scripts
