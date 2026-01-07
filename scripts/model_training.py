@@ -2,12 +2,16 @@
 # importing libraries
 
 import warnings
+from pathlib import Path
 
+import joblib
 import numpy as np
 
 from diabetes.data import create_sample_split, load_parquet, save_model
 from diabetes.modelling import glm_pipeline, glm_search, lgbm_pipeline, lgbm_search
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT_DIR / "models"
 # %%
 # load data
 df_model = load_parquet().copy()
@@ -85,6 +89,10 @@ save_model(glm_best_pipeline, "glm_best_pipeline")
 lgbm_search_obj = lgbm_search(lgbm_pipe)
 lgbm_search_obj.fit(X_train, y_train)
 lgbm_best_pipeline = lgbm_search_obj.best_estimator_
-save_model(lgbm_best_pipeline, "lgbm_best_pipeline")
+model_path = MODELS_DIR / "lgbm_best_pipeline.pkl"
+joblib.dump(
+    lgbm_best_pipeline, model_path, compress=3
+)  # could not save using save_model function
+
 
 # %%
