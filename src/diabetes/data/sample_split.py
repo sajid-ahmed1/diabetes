@@ -26,12 +26,9 @@ def create_sample_split(
         based on IDs.
     """
 
-    if df[id_column].dtype == np.int64:
-        modulo = df[id_column] % 100
-    else:
-        modulo = df[id_column].apply(
-            lambda x: int(hashlib.md5(str(x).encode()).hexdigest(), 16) % 100
-        )
+    modulo = df[id_column].apply(
+        lambda x: int(hashlib.md5(str(x).encode()).hexdigest(), 16) % 100
+    )
 
     df["sample"] = np.where(modulo < training_frac * 100, "train", "test")
 

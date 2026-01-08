@@ -1,25 +1,30 @@
+import os
+
+# Fix for segmentation fault on macOS with LightGBM/OpenMP
+os.environ["OMP_NUM_THREADS"] = "1"
+
+from pathlib import Path
+
 import dalex as dx
+import joblib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
 from sklearn.inspection import permutation_importance
 
-from diabetes.data import create_sample_split, load_model, load_parquet, save_image
+from diabetes.data import load_model, save_image
 from diabetes.evaluation import evaluate_predictions
 from diabetes.visualisation import lorenz_curve, plot_predicted_vs_actual
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT_DIR / "models"
+DATA_DIR = ROOT_DIR / "data"
+
 # %%
 # load data
-df_model = load_parquet().copy()
-
-# %%
-# assigned y to be target column from built table
-y = df_model["Outcome"]
-
-# %%
-# Apply train/test split
-df = create_sample_split(df_model, id_column="Id")
+# Load split data directly to ensure consistency with training
+df = pd.read_parquet(DATA_DIR / "data_split.parquet")
 
 train_idx = np.where(df["sample"] == "train")[0]
 test_idx = np.where(df["sample"] == "test")[0]
@@ -55,7 +60,7 @@ y_test = df_test["Outcome"]
 # %%
 # load best pipelines trained in scripts/model_training.py
 best_glm = load_model("glm_best_pipeline")
-best_lgbm = load_model("lgbm_best_pipeline")
+best_lgbm = joblib.load(MODELS_DIR / "lgbm_best_pipeline.pkl")
 
 # %%
 # predictions from tuned models
@@ -64,15 +69,21 @@ df_test["p_glm"] = best_glm.predict(X_test)
 df_test["p_lgbm"] = best_lgbm.predict_proba(X_test)[:, 1]
 
 pd.set_option("display.float_format", lambda x: "%.3f" % x)
-evaluate_predictions(
-    df_test,
-    outcome_column="Outcome",
-    preds_column="p_glm",
+print("GLM Evaluation:")
+print(
+    evaluate_predictions(
+        df_test,
+        outcome_column="Outcome",
+        preds_column="p_glm",
+    )
 )
-evaluate_predictions(
-    df_test,
-    outcome_column="Outcome",
-    preds_column="p_lgbm",
+print("\nLGBM Evaluation:")
+print(
+    evaluate_predictions(
+        df_test,
+        outcome_column="Outcome",
+        preds_column="p_lgbm",
+    )
 )
 
 # %%

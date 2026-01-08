@@ -2,7 +2,7 @@ import warnings
 from typing import Sequence
 
 from sklearn.metrics import log_loss, make_scorer
-from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.model_selection import GridSearchCV, GroupKFold
 from sklearn.pipeline import Pipeline
 
 
@@ -17,18 +17,16 @@ def glm_search(
 ) -> GridSearchCV:
     """
     Construct a GridSearchCV object for tuning a GLM pipeline with elastic-net
-    regularization using stratified cross-validation and log-loss scoring.
+    regularization using GroupKFold cross-validation and log-loss scoring.
 
     Notes
     -----
     - had to add scoring and warnings ignore due to the spam of warnings
     - added make_scorer due to GLM returning probabilities via predict()
     - but the warnings were looking for predict_proba()
-    - I used stratified CV because the dataset is imbalanced, it had 5-6% slow
-        sessions and the rest not slow. Due to this, I read that using the
-        stratified CV handles imbalanced datasets well because when taking the
-        fold, it keeps the proportion the same. So the fold would have 5% of
-        target = 1 (slow session).
+    - Switched to GroupKFold to prevent data leakage from repeating identifiers.
+      This ensures the model is evaluated on its ability to generalize to new
+      groups (IDs) rather than memorizing rows from the same group.
 
     Parameters
     ----
@@ -51,11 +49,7 @@ def glm_search(
     GridSearchCV:
         Configured grid search object ready to be fit.
     """
-    cv = StratifiedKFold(
-        n_splits=n_splits,
-        shuffle=True,
-        random_state=random_state,
-    )
+    cv = GroupKFold(n_splits=n_splits)
 
     param_grid = {
         "model__alpha": list(alphas),
@@ -95,7 +89,7 @@ def lgbm_search(
 ) -> GridSearchCV:
     """
     Construct a GridSearchCV object for tuning a LightGBM pipeline using
-    cross-validated negative log loss.
+    GroupKFold cross-validated negative log loss.
 
     Notes
     -----
@@ -129,11 +123,7 @@ def lgbm_search(
     GridSearchCV:
         Configured grid search object ready to be fit.
     """
-    cv = StratifiedKFold(
-        n_splits=n_splits,
-        shuffle=True,
-        random_state=random_state,
-    )
+    cv = GroupKFold(n_splits=n_splits)
 
     param_grid = {
         "model__learning_rate": list(learning_rates),

@@ -39,6 +39,7 @@ def evaluate_predictions(
     mean_preds = float(np.average(preds))
     mean_outcome = float(np.average(y_true))
 
+    abs_bias = mean_preds - mean_outcome
     bias = float("nan")
     if mean_outcome != 0:
         bias = float((mean_preds - mean_outcome) / mean_outcome)
@@ -60,6 +61,7 @@ def evaluate_predictions(
     evals: dict[str, float] = {
         "mean_preds": mean_preds,
         "mean_outcome": mean_outcome,
+        "abs_bias": abs_bias,
         "bias": bias,
         "mse": mse,
         "rmse": rmse,
