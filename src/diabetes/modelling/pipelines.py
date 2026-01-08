@@ -16,7 +16,7 @@ def glm_pipeline(
     Build a preprocessing + GLM pipeline for binary classification.
 
     The pipeline:
-    - Median-imputes numeric features
+    - Mean-imputes numeric features
     - One-hot encodes categorical features (drops first level)
     - Fits a GLM binary classifier
 
@@ -39,7 +39,7 @@ def glm_pipeline(
                 "num",
                 Pipeline(
                     steps=[
-                        ("impute", SimpleImputer(strategy="median")),
+                        ("impute", SimpleImputer(strategy="mean")),
                         ("scale", StandardScaler()),
                     ]
                 ),
@@ -83,8 +83,8 @@ def lgbm_pipeline(
     Build a preprocessing + LightGBM pipeline for binary classification.
 
     The pipeline:
-    - Median-imputes numeric features
-    - One-hot encodes categorical features (drops first level)
+    - Mean-imputes numeric features
+    - One-hot encodes categorical features
     - Fits a LightGBM binary classifier
 
     Parameters
@@ -102,7 +102,7 @@ def lgbm_pipeline(
     """
     preprocess = ColumnTransformer(
         transformers=[
-            ("num", SimpleImputer(strategy="median"), numericals),
+            ("num", SimpleImputer(strategy="mean"), numericals),
             (
                 "cat",
                 OneHotEncoder(
@@ -114,9 +114,9 @@ def lgbm_pipeline(
         ]
     )
 
-    # Ensure the preprocessor outputs a NumPy array (no feature-name metadata).
-    # This avoids sklearn warnings from LGBMClassifier about mismatched feature names.
-    preprocess.set_output(transform="default")
+    # Ensure the preprocessor outputs a pandas DataFrame.
+    # This ensures feature names are passed to LGBMClassifier, preventing warnings.
+    preprocess.set_output(transform="pandas")
 
     return Pipeline(
         steps=[

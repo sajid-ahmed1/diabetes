@@ -1,14 +1,17 @@
 from pathlib import Path
 
 import joblib
+import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.figure import Figure
 from sklearn.pipeline import Pipeline
 
 # define the paths
-ROOT = ROOT = Path(__file__).resolve().parents[3]
-CSV_PATH = ROOT / "data" / "raw" / "data.csv"
+ROOT = Path(__file__).resolve().parents[3]
+CSV_PATH = ROOT / "data" / "raw" / "Healthcare-Diabetes.csv"
 PARQUET_PATH = ROOT / "data" / "cleaned_data.parquet"
 MODEL = ROOT / "models"
+IMAGES = ROOT / "images"
 
 
 def load_csv() -> pd.DataFrame:
@@ -57,3 +60,23 @@ def load_model(name: str) -> Pipeline:
         model pipeline
     """
     return joblib.load(MODEL / f"{name}.pkl")
+
+
+def save_image(fig: Figure | None, name: str) -> None:
+    """
+    Saves a matplotlib figure to the images directory.
+
+    Parameters
+    ----
+    fig (Figure | None):
+        The figure to save. If None, saves the current active figure.
+    name (str):
+        The filename (e.g. "plot.png").
+    """
+    IMAGES.mkdir(parents=True, exist_ok=True)
+    path = IMAGES / name
+    if fig is None:
+        plt.savefig(path, bbox_inches="tight")
+    else:
+        fig.savefig(path, bbox_inches="tight")
+    print(f"Saved image to {path}")

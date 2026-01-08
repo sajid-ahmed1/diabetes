@@ -37,7 +37,7 @@ def save_data(df: pd.DataFrame, save_path: Path) -> Path:
     return output_path
 
 
-def save_model(pipeline: Pipeline, name: str) -> None:
+def save_model(pipeline: Pipeline, name: str, **kwargs: Any) -> None:
     """
     Save a trained pipeline as a .pkl file.
 
@@ -47,14 +47,18 @@ def save_model(pipeline: Pipeline, name: str) -> None:
         taking the trained pipeline
     name (str):
         name of the file
+    **kwargs:
+        Additional arguments passed to joblib.dump (e.g. compress=3).
     """
+    MODEL.mkdir(parents=True, exist_ok=True)
+
     # remove extension
     base = name.split(".")[0]
 
     # replace unsafe characters
     clean = "".join(c if c.isalnum() or c in "-_ " else "_" for c in base)
 
-    joblib.dump(pipeline, MODEL / (clean + ".pkl"))
+    joblib.dump(pipeline, MODEL / (clean + ".pkl"), **kwargs)
 
 
 def save_image(

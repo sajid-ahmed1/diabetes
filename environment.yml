@@ -30,4 +30,3 @@ dependencies:
   - scikit-learn
   - dalex
   - lightgbm
-  - libomp
